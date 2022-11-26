@@ -1,4 +1,7 @@
 # SpringBoot-GraphQl
+![img_8.png](img_8.png)
+
+<br>
 A Simple SpringBoot GraphQl application
 
 ### Api Documentation - Swagger Url :
@@ -14,7 +17,6 @@ http://localhost:8081/graphiql
 <br>
 <br>
 #### How to create graphQL Queries :
-
 <br>
  GraphQL queries typically start with a "{" character. Lines that start
  with a # are ignored.
