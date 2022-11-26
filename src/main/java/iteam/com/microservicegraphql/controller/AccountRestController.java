@@ -1,55 +1,47 @@
 package iteam.com.microservicegraphql.controller;
 
+import iteam.com.microservicegraphql.dto.BankAccountRequestDTO;
+import iteam.com.microservicegraphql.dto.BankAccountResponseDTO;
 import iteam.com.microservicegraphql.entite.BankAccount;
 import iteam.com.microservicegraphql.repository.BankAccountRepository;
+import iteam.com.microservicegraphql.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 public class AccountRestController {
-    private final BankAccountRepository bankAccountRepository;
+    private final AccountService accountService;
 
-    public AccountRestController(BankAccountRepository bankAccountRepository) {
-        this.bankAccountRepository = bankAccountRepository;
+    public AccountRestController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @GetMapping("/bankAccounts")
-    public List<BankAccount> bankAccounts(){
-        return bankAccountRepository.findAll();
+    public List<BankAccountResponseDTO> bankAccounts() {
+        return accountService.getAllAccount();
     }
+
     @GetMapping("/bankAccounts/{id}")
-    public BankAccount bankAccount(@PathVariable String id){
-        return bankAccountRepository.findById(id)
-                .orElseThrow(()->new RuntimeException(String.format("Account %s not found", id)));
+    public BankAccountResponseDTO bankAccount(@PathVariable String id) {
+        return this.accountService.getAccountById(id);
     }
 
-    @PostMapping("/bankAccounts/{id}")
-    public BankAccount save(@RequestBody BankAccount bankAccount){
-        if(bankAccount.getId()==null) bankAccount.setId(UUID.randomUUID().toString());
-        if(bankAccount.getBalance() != 0.0) bankAccount.setBalance(bankAccount.getBalance());
-        if(bankAccount.getCreatedAt()!= null) bankAccount.setCreatedAt(bankAccount.getCreatedAt());
-        if(bankAccount.getType()!= null) bankAccount.setType(bankAccount.getType());
-        if(bankAccount.getCurrency()!= null) bankAccount.setCurrency(bankAccount.getCurrency());
-
-        return bankAccountRepository.save(bankAccount);
+    @PostMapping("/bankAccounts")
+    public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO bankAccount) {
+        return this.accountService.addAccount(bankAccount);
     }
 
     @PutMapping("/bankAccounts/{id}")
-    public BankAccount update(@PathVariable String id, @RequestBody BankAccount bankAccount) {
-        BankAccount account = bankAccountRepository.findById(id).orElseThrow(null);
-        System.out.println(bankAccount.getBalance());
-        System.out.println(account.getBalance());
-        if (bankAccount.getBalance() != 0.0) account.setBalance(bankAccount.getBalance());
-        if (bankAccount.getCreatedAt() != null) account.setCreatedAt(bankAccount.getCreatedAt());
-        if (bankAccount.getType() != null) account.setType(bankAccount.getType());
-        if (bankAccount.getCurrency() != null) account.setCurrency(bankAccount.getCurrency());
-        return bankAccountRepository.save(account);
+    public BankAccountResponseDTO update(@PathVariable String id, @RequestBody BankAccountRequestDTO bankAccountRequestDTO) {
+      return this.accountService.updateAccount(id, bankAccountRequestDTO);
     }
 
-        @DeleteMapping("/bankAccounts/{id}")
-        public void delete(@PathVariable String id){
-            bankAccountRepository.deleteById(id);
-        }
+    @DeleteMapping("/bankAccounts/{id}")
+    public void delete(@PathVariable String id) {
+        this.accountService.deleteAccount(id);
+
+    }
 }
