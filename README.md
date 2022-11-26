@@ -1,6 +1,5 @@
 # SpringBoot-GraphQl
 ![img_8.png](img_8.png)
-
 <br>
 A Simple SpringBoot GraphQl application
 
